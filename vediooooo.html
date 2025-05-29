@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داگرتنی ڤیدیۆ | GitHub Pages</title>
+    <style>
+        :root {
+            --primary: #2b8a3e;
+            --secondary: #2f9e44;
+            --error: #fa5252;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: var(--secondary);
+        }
+        #result {
+            margin-top: 20px;
+            min-height: 50px;
+        }
+        .download-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 25px;
+            background: var(--secondary);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .error {
+            color: var(--error);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>داگرتنی ڤیدیۆ</h1>
+        <p>لینکی <strong>ڕاستەوخۆی</strong> ڤیدیۆکە بنووسە (وەک .mp4, .webm):</p>
+        
+        <input type="text" id="videoUrl" placeholder="https://example.com/video.mp4">
+        <button onclick="checkVideo()">پشکنین بکە</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function checkVideo() {
+            const url = document.getElementById('videoUrl').value.trim();
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '';
+            
+            if (!url) {
+                resultDiv.innerHTML = '<p class="error">تکایە لینکی ڤیدیۆکە بنووسە!</p>';
+                return;
+            }
+
+            // پشکنینی ئەوەی کە لینکەکە ڤیدیۆیە
+            const videoExtensions = ['.mp4', '.webm', '.mov', '.avi', '.mkv'];
+            const isVideo = videoExtensions.some(ext => {
+                const lowerUrl = url.toLowerCase();
+                return lowerUrl.includes(ext) && 
+                      (lowerUrl.startsWith('http://') || lowerUrl.startsWith('https://'));
+            });
+            
+            if (isVideo) {
+                const filename = getFilenameFromUrl(url);
+                resultDiv.innerHTML = `
+                    <p>لینکەکە گونجاوە! ئێستا دەتوانیت ڤیدیۆکە دابەزێنیت:</p>
+                    <a href="${url}" download="${filename}" class="download-btn">
+                        داگرتنی ڤیدیۆ
+                    </a>
+                    <p><small>ناوی فایل: ${filename}</small></p>
+                `;
+            } else {
+                resultDiv.innerHTML = `
+                    <p class="error">لینکەکە گونجاو نییە یان پشتگیری ناکرێت.</p>
+                    <p>تکایە دڵنیابە لەوەی:</p>
+                    <ul style="text-align: right; margin-right: 20px;">
+                        <li>لینکەکە ڕاستەوخۆی ڤیدیۆیە (کۆتایی بە .mp4 یان .webm بێت)</li>
+                        <li>بە "https://" دەست پێبکات</li>
+                    </ul>
+                `;
+            }
+        }
+        
+        function getFilenameFromUrl(url) {
+            let filename = url.split('/').pop();
+            filename = filename.split('?')[0]; // لابردنی پارامیتەرەکان
+            filename = filename || 'video_' + new Date().getTime() + '.mp4';
+            return filename;
+        }
+    </script>
+</body>
+</html>
